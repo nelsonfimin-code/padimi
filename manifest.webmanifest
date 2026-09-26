@@ -1,0 +1,11 @@
+{
+  "name": "PADIMI",
+  "short_name": "PADIMI",
+  "description": "Say it in your own words.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#19171d",
+  "theme_color": "#19171d",
+  "lang": "en",
+  "icons": [{"src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}]
+}
