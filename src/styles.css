@@ -137,6 +137,27 @@ textarea:focus-visible { outline: none; }
   backdrop-filter: blur(12px);
 }
 
+.tone-row {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  margin-bottom: .9rem;
+}
+.tone-caption {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+.tone-row select {
+  appearance: none;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: rgba(255,255,255,.03);
+  color: var(--foreground);
+  padding: .4rem 1.9rem .4rem .75rem;
+  font-size: 11px;
+  outline: 0;
+}
+.tone-row select:focus { border-color: var(--plum); }
 .modes { display: flex; gap: 1.25rem; }
 
 .mode {

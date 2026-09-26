@@ -1,3 +1,13 @@
+export const TONES = [
+  { id: "neutral", label: "Neutral" },
+  { id: "professional", label: "Professional" },
+  { id: "friendly", label: "Friendly" },
+  { id: "casual", label: "Casual" },
+  { id: "funny", label: "Funny" },
+  { id: "confident", label: "Confident" },
+  { id: "polite", label: "Polite" },
+];
+
 export const MODES = [
   { id: "clear", label: "Clear", hint: "Trims filler for easier reading" },
   { id: "natural", label: "Natural", hint: "Light cleanup, your voice intact" },
@@ -59,11 +69,11 @@ export function refineLocal(text, mode) {
     .filter(Boolean).join("\n\n");
 }
 
-export async function refine(text, mode) {
+export async function refine(text, mode, tone = "neutral") {
   const response = await fetch("/api/refine", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text, mode }),
+    body: JSON.stringify({ text, mode, tone }),
   });
   if (!response.ok) throw new Error("AI refinement unavailable");
   const data = await response.json();

@@ -1,3 +1,13 @@
+const TONE_INSTRUCTIONS = {
+  neutral: "Use a neutral, natural tone.",
+  professional: "Use a professional, polished tone. Keep it human and avoid corporate jargon.",
+  friendly: "Use a friendly, warm tone. Sound approachable, not overly cheerful.",
+  casual: "Use a relaxed, casual tone. Keep it natural and easy to read.",
+  funny: "Use light, natural humor where it fits. Do not force jokes or change the meaning.",
+  confident: "Use a confident tone. Sound clear and self-assured without sounding arrogant.",
+  polite: "Use a polite and considerate tone. Keep it clear without sounding overly formal.",
+};
+
 const MODE_INSTRUCTIONS = {
   clear: "Make the writing clear and easy to read. Remove unnecessary filler, repetition, and awkward wording. Keep the user's meaning, personality, and level of formality.",
   natural: "Lightly improve the writing so it sounds natural, clean, and human. Keep the user's words, meaning, personality, and level of formality wherever possible.",
@@ -5,12 +15,13 @@ const MODE_INSTRUCTIONS = {
 };
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
-  const { text, mode = "natural" } = req.body || {};
+  const { text, mode = "natural", tone = "neutral" } = req.body || {};
   if (typeof text !== "string" || !text.trim()) return res.status(400).json({ error: "Text is required" });
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return res.status(503).json({ error: "AI provider is not configured" });
   const instruction = MODE_INSTRUCTIONS[mode] || MODE_INSTRUCTIONS.natural;
-  const prompt = ["You are PADIMI, a personal writing editor.", instruction, "Return only the rewritten text. Do not explain the changes. Do not add quotes around it.", "Preserve paragraph breaks. Never invent facts or ideas.", "", "DRAFT:", text.trim()].join("\n");
+  const toneInstruction = TONE_INSTRUCTIONS[tone] || TONE_INSTRUCTIONS.neutral;
+  const prompt = ["You are PADIMI, a personal writing editor.", instruction, toneInstruction, "Return only the rewritten text. Do not explain the changes. Do not add quotes around it.", "Preserve paragraph breaks. Never invent facts or ideas.", "", "DRAFT:", text.trim()].join("\n");
   try {
     const upstream = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",

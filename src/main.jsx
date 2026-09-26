@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { MODES, refine, refineLocal } from "./refine.js";
+import { MODES, TONES, refine, refineLocal } from "./refine.js";
 import "./styles.css";
 
 function App() {
   const [stage, setStage] = useState("empty");
   const [draft, setDraft] = useState("");
   const [mode, setMode] = useState("natural");
+  const [tone, setTone] = useState("neutral");
   const [result, setResult] = useState("");
   const [resultMode, setResultMode] = useState("natural");
+  const [resultTone, setResultTone] = useState("neutral");
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [aiUsed, setAiUsed] = useState(false);
@@ -55,7 +57,7 @@ function App() {
     try {
       let out;
       try {
-        const response = await refine(draft, mode);
+        const response = await refine(draft, mode, tone);
         out = response.text;
         setAiUsed(response.provider === "groq");
       } catch {
@@ -64,6 +66,7 @@ function App() {
       }
       setResult(out || trimmed);
       setResultMode(mode);
+      setResultTone(tone);
       setView("refined");
       setCopied(false);
       setStage("result");
@@ -99,6 +102,7 @@ function App() {
     setDraft("");
     setResult("");
     setMode("natural");
+    setTone("neutral");
     setStage("empty");
   }
 
@@ -110,6 +114,7 @@ function App() {
   }
 
   const modeLabel = MODES.find((item) => item.id === resultMode)?.label;
+  const toneLabel = TONES.find((item) => item.id === resultTone)?.label;
 
   return (
     <div className="app">
@@ -147,6 +152,12 @@ function App() {
                 readOnly={loading}
               />
               <div className="bottom-bar">
+                <div className="tone-row">
+                  <span className="tone-caption">Tone</span>
+                  <select value={tone} onChange={(event) => setTone(event.target.value)} aria-label="Tone">
+                    {TONES.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}
+                  </select>
+                </div>
                 <div className="modes" role="radiogroup" aria-label="Refinement style">
                   {MODES.map((item) => (
                     <button
@@ -178,7 +189,7 @@ function App() {
 
           {stage === "result" && (
             <section className="result-stage rise">
-              <div className="result-top">                <span className="mode-label">{aiUsed ? "AI · " : "Local · "}{modeLabel}</span>
+              <div className="result-top">                <span className="mode-label">{aiUsed ? "AI · " : "Local · "}{modeLabel} · {toneLabel}</span>
                 <div className="views" role="tablist" aria-label="Compare versions">
                   {["refined", "original"].map((item) => (
                     <button
