@@ -8,18 +8,27 @@ const root = path.dirname(fileURLToPath(import.meta.url));
 const dist = path.join(root, 'dist');
 const port = Number(process.env.PORT || 3000);
 
-const send = (res, status, type, body) => { res.writeHead(status, { 'Content-Type': type, 'Cache-Control': 'no-store' }); res.end(body); };
+const send = (res, status, type, body, cache='no-store') => { res.writeHead(status, { 'Content-Type': type, 'Cache-Control': cache }); res.end(body); };
 
 async function readJson(req) {
-  let body = ''; for await (const chunk of req) body += chunk;
-  return JSON.parse(body || '{}');
+  let body = '';
+  for await (const chunk of req) {
+    body += chunk;
+    if (body.length > 500_000) throw Object.assign(new Error('Request too large'), { statusCode: 413 });
+  }
+  try { return JSON.parse(body || '{}'); } catch { throw Object.assign(new Error('Invalid JSON'), { statusCode: 400 }); }
 }
 
 const server = http.createServer(async (req, res) => {
   try {
+    if (req.method === 'GET' && req.url === '/health') {
+      return send(res, 200, 'application/json', JSON.stringify({ status: 'ok', service: 'padimi' }));
+    }
+
     if (req.method === 'POST' && req.url === '/api/refine') {
       const { text, mode = 'natural' } = await readJson(req);
       if (typeof text !== 'string' || !text.trim()) return send(res, 400, 'application/json', JSON.stringify({ error: 'Text is required' }));
+      if (!['clear', 'natural', 'strong'].includes(mode)) return send(res, 400, 'application/json', JSON.stringify({ error: 'Invalid mode' }));
       if (process.env.GROQ_API_KEY) {
         const upstream = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.GROQ_API_KEY}` },
@@ -37,12 +46,16 @@ const server = http.createServer(async (req, res) => {
 
     let url = req.url === '/' ? '/index.html' : req.url.split('?')[0];
     const file = path.normalize(path.join(dist, url));
-    if (!file.startsWith(dist)) return send(res, 403, 'text/plain', 'Forbidden');
+    const relative = path.relative(dist, file);
+    if (relative.startsWith('..') || path.isAbsolute(relative)) return send(res, 403, 'text/plain', 'Forbidden');
     if (fs.existsSync(file) && fs.statSync(file).isFile()) {
       const ext = path.extname(file); const types = { '.html':'text/html; charset=utf-8', '.js':'text/javascript', '.css':'text/css', '.svg':'image/svg+xml', '.json':'application/json' };
       return send(res, 200, types[ext] || 'application/octet-stream', fs.readFileSync(file));
     }
     return send(res, 404, 'text/plain', 'Not found');
-  } catch (e) { return send(res, 500, 'application/json', JSON.stringify({ error: 'Server error' })); }
+  } catch (e) {
+    const status = Number.isInteger(e?.statusCode) ? e.statusCode : 500;
+    return send(res, status, 'application/json', JSON.stringify({ error: status === 500 ? 'Server error' : e.message }));
+  }
 });
 server.listen(port, '0.0.0.0', () => console.log(`PADIMI listening on ${port}`));
