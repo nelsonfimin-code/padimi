@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { MODES, refine } from "./refine.js";
+import { MODES, refine, refineLocal } from "./refine.js";
 import "./styles.css";
 
 function App() {
@@ -11,6 +11,7 @@ function App() {
   const [resultMode, setResultMode] = useState("natural");
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [aiUsed, setAiUsed] = useState(false);
   const [view, setView] = useState("refined");
   const [nudge, setNudge] = useState(false);
   const areaRef = useRef(null);
@@ -39,7 +40,14 @@ function App() {
     }
     setLoading(true);
     try {
-      const out = await refine(draft, mode);
+      let out;
+      try {
+        out = await refine(draft, mode);
+        setAiUsed(true);
+      } catch {
+        out = refineLocal(draft, mode);
+        setAiUsed(false);
+      }
       setResult(out || trimmed);
       setResultMode(mode);
       setView("refined");
@@ -153,7 +161,7 @@ function App() {
 
           {stage === "result" && (
             <section className="result-stage rise">
-              <div className="result-top">                <span className="mode-label">{modeLabel}</span>
+              <div className="result-top">                <span className="mode-label">{aiUsed ? "AI · " : "Local · "}{modeLabel}</span>
                 <div className="views" role="tablist" aria-label="Compare versions">
                   {["refined", "original"].map((item) => (
                     <button

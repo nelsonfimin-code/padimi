@@ -42,11 +42,10 @@ function cleanLine(line) {
     .replace(/([.!?])(?=[A-Z])/g, "$1 ")
     .replace(/,{2,}/g, ",")
     .replace(/!{2,}/g, "!")
-    .replace(/\?{2,}/g, "?")    .replace(/\b(\w+) \1\b/gi, (match, word) =>
-      /^(had|that)$/i.test(word) ? match : word)
+    .replace(/\?{2,}/g, "?")
+    .replace(/\b(\w+) \1\b/gi, (match, word) => /^(had|that)$/i.test(word) ? match : word)
     .replace(/\bi\b/g, "I")
-    .replace(/(^|[.!?]\s+)([a-z])/g, (_, prefix, letter) =>
-      prefix + letter.toUpperCase());
+    .replace(/(^|[.!?]\s+)([a-z])/g, (_, prefix, letter) => prefix + letter.toUpperCase());
 
   if (text && !/[.!?…:"')\]]$/.test(text)) text += ".";
   return text;
@@ -54,25 +53,20 @@ function cleanLine(line) {
 
 export function refineLocal(text, mode) {
   if (typeof text !== "string" || !text.trim()) return "";
-
-  const rules =
-    mode === "clear" ? CLEAR_RULES :
-    mode === "strong" ? STRONG_RULES : [];
-
-  return text
-    .replace(/\r\n?/g, "\n")
-    .split(/\n{2,}/)
-    .map((paragraph) =>
-      paragraph
-        .split("\n")
-        .map((line) => cleanLine(applyRules(line, rules)))
-        .filter(Boolean)
-        .join("\n"))
-    .filter(Boolean)
-    .join("\n\n");
+  const rules = mode === "clear" ? CLEAR_RULES : mode === "strong" ? STRONG_RULES : [];
+  return text.replace(/\r\n?/g, "\n").split(/\n{2,}/)
+    .map(paragraph => paragraph.split("\n").map(line => cleanLine(applyRules(line, rules))).filter(Boolean).join("\n"))
+    .filter(Boolean).join("\n\n");
 }
 
 export async function refine(text, mode) {
-  await new Promise((resolve) => setTimeout(resolve, 350));
-  return refineLocal(text, mode);
+  const response = await fetch("/api/refine", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, mode }),
+  });
+  if (!response.ok) throw new Error("AI refinement unavailable");
+  const data = await response.json();
+  if (!data?.text) throw new Error("AI returned no text");
+  return data.text;
 }
