@@ -15,13 +15,14 @@ const MODE_INSTRUCTIONS = {
 };
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
-  const { text, mode = "natural", tone = "neutral" } = req.body || {};
+  const { text, mode = "natural", tone = "neutral", instruction = "" } = req.body || {};
   if (typeof text !== "string" || !text.trim()) return res.status(400).json({ error: "Text is required" });
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return res.status(503).json({ error: "AI provider is not configured" });
-  const instruction = MODE_INSTRUCTIONS[mode] || MODE_INSTRUCTIONS.natural;
+  const modeInstruction = MODE_INSTRUCTIONS[mode] || MODE_INSTRUCTIONS.natural;
+  const extraInstruction = typeof instruction === "string" ? instruction.trim().slice(0, 240) : "";
   const toneInstruction = TONE_INSTRUCTIONS[tone] || TONE_INSTRUCTIONS.neutral;
-  const prompt = ["You are PADIMI, a personal writing editor.", instruction, toneInstruction, "Return only the rewritten text. Do not explain the changes. Do not add quotes around it.", "Preserve paragraph breaks. Never invent facts or ideas.", "", "DRAFT:", text.trim()].join("\n");
+  const prompt = ["You are PADIMI, a personal writing editor.", modeInstruction, toneInstruction, extraInstruction ? `EXTRA INSTRUCTION: ${extraInstruction}` : "", "Return only the rewritten text. Do not explain the changes. Do not add quotes around it.", "Preserve paragraph breaks. Never invent facts or ideas.", "", "DRAFT:", text.trim()].join("\n");
   try {
     const upstream = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",

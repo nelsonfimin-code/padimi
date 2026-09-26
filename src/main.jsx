@@ -8,6 +8,7 @@ function App() {
   const [draft, setDraft] = useState("");
   const [mode, setMode] = useState("natural");
   const [tone, setTone] = useState("neutral");
+  const [instruction, setInstruction] = useState("");
   const [result, setResult] = useState("");
   const [resultMode, setResultMode] = useState("natural");
   const [resultTone, setResultTone] = useState("neutral");
@@ -57,7 +58,7 @@ function App() {
     try {
       let out;
       try {
-        const response = await refine(draft, mode, tone);
+        const response = await refine(draft, mode, tone, instruction);
         out = response.text;
         setAiUsed(response.provider === "groq");
       } catch {
@@ -103,6 +104,7 @@ function App() {
     setResult("");
     setMode("natural");
     setTone("neutral");
+    setInstruction("");
     setStage("empty");
   }
 
@@ -152,11 +154,21 @@ function App() {
                 readOnly={loading}
               />
               <div className="bottom-bar">
-                <div className="tone-row">
-                  <span className="tone-caption">Tone</span>
-                  <select value={tone} onChange={(event) => setTone(event.target.value)} aria-label="Tone">
-                    {TONES.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}
-                  </select>
+                <div className="control-row">
+                  <div className="tone-row">
+                    <span className="tone-caption">Tone</span>
+                    <select value={tone} onChange={(event) => setTone(event.target.value)} aria-label="Tone">
+                      {TONES.map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}
+                    </select>
+                  </div>
+                  <input
+                    className="instruction-input"
+                    value={instruction}
+                    onChange={(event) => setInstruction(event.target.value)}
+                    placeholder="Anything else? e.g. make it shorter"
+                    aria-label="Extra instruction"
+                    maxLength={240}
+                  />
                 </div>
                 <div className="modes" role="radiogroup" aria-label="Refinement style">
                   {MODES.map((item) => (

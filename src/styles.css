@@ -288,3 +288,32 @@ footer {
 }
 
 .quiet-pill:hover { color: var(--foreground); }
+
+.control-row {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: .9rem;
+}
+
+.control-row .tone-row { margin-bottom: 0; flex: 0 0 auto; }
+
+.instruction-input {
+  min-width: 0;
+  flex: 1;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: rgba(255,255,255,.03);
+  color: var(--foreground);
+  padding: .4rem .75rem;
+  font-size: 11px;
+  outline: 0;
+}
+
+.instruction-input::placeholder { color: rgba(155,150,160,.7); }
+.instruction-input:focus { border-color: var(--plum); }
+
+@media (max-width: 420px) {
+  .control-row { align-items: stretch; flex-direction: column; gap: .55rem; }
+  .control-row .tone-row { width: max-content; }
+}

@@ -26,16 +26,17 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === 'POST' && req.url === '/api/refine') {
-      const { text, mode = 'natural', tone = 'neutral' } = await readJson(req);
+      const { text, mode = 'natural', tone = 'neutral', instruction = '' } = await readJson(req);
       if (typeof text !== 'string' || !text.trim()) return send(res, 400, 'application/json', JSON.stringify({ error: 'Text is required' }));
       if (!['clear', 'natural', 'strong'].includes(mode)) return send(res, 400, 'application/json', JSON.stringify({ error: 'Invalid mode' }));
       if (!['neutral', 'professional', 'friendly', 'casual', 'funny', 'confident', 'polite'].includes(tone)) return send(res, 400, 'application/json', JSON.stringify({ error: 'Invalid tone' }));
+      const extraInstruction = typeof instruction === 'string' ? instruction.trim().slice(0, 240) : '';
       if (process.env.GROQ_API_KEY) {
         const upstream = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.GROQ_API_KEY}` },
           body: JSON.stringify({ model: process.env.GROQ_MODEL || 'llama-3.1-8b-instant', messages: [
             { role: 'system', content: 'You edit text precisely. Preserve meaning and voice. Output only the finished text.' },
-            { role: 'user', content: `You are PADIMI, a personal writing editor. ${mode === 'clear' ? 'Make the writing clear and easy to read. Remove unnecessary filler and repetition.' : mode === 'strong' ? 'Make the writing more direct and confident without sounding aggressive or corporate.' : 'Lightly improve the writing so it sounds natural, clean, and human.'} ${({neutral:'Use a neutral, natural tone.',professional:'Use a professional, polished tone. Keep it human and avoid corporate jargon.',friendly:'Use a friendly, warm tone. Sound approachable, not overly cheerful.',casual:'Use a relaxed, casual tone. Keep it natural and easy to read.',funny:'Use light, natural humor where it fits. Do not force jokes or change the meaning.',confident:'Use a confident tone. Sound clear and self-assured without sounding arrogant.',polite:'Use a polite and considerate tone. Keep it clear without sounding overly formal.'})[tone]} Keep meaning, personality, paragraph breaks, and facts. Return only the rewritten text.\n\nDRAFT:\n${text.trim()}` }
+            { role: 'user', content: `You are PADIMI, a personal writing editor. ${mode === 'clear' ? 'Make the writing clear and easy to read. Remove unnecessary filler and repetition.' : mode === 'strong' ? 'Make the writing more direct and confident without sounding aggressive or corporate.' : 'Lightly improve the writing so it sounds natural, clean, and human.'} ${({neutral:'Use a neutral, natural tone.',professional:'Use a professional, polished tone. Keep it human and avoid corporate jargon.',friendly:'Use a friendly, warm tone. Sound approachable, not overly cheerful.',casual:'Use a relaxed, casual tone. Keep it natural and easy to read.',funny:'Use light, natural humor where it fits. Do not force jokes or change the meaning.',confident:'Use a confident tone. Sound clear and self-assured without sounding arrogant.',polite:'Use a polite and considerate tone. Keep it clear without sounding overly formal.'})[tone]} Keep meaning, personality, paragraph breaks, and facts. ${extraInstruction ? `Follow this extra instruction: ${extraInstruction}\n` : ''}Return only the rewritten text.\n\nDRAFT:\n${text.trim()}` }
           ], temperature: mode === 'strong' ? 0.35 : 0.2, max_tokens: Math.min(4000, Math.max(256, text.length * 2)) })
         });
         const data = await upstream.json();

@@ -35,12 +35,17 @@ test("multiline text keeps paragraph boundaries", () => {
 });
 test("remote refinement preserves provider metadata", async () => {
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = async () => new Response(
-    JSON.stringify({ text: "Refined text.", provider: "groq" }),
-    { status: 200, headers: { "Content-Type": "application/json" } }
-  );
+  globalThis.fetch = async (_url, options) => {
+    const body = JSON.parse(options.body);
+    assert.equal(body.tone, "neutral");
+    assert.equal(body.instruction, "make it shorter");
+    return new Response(
+      JSON.stringify({ text: "Refined text.", provider: "groq" }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
+  };
   try {
-    assert.deepEqual(await refine("rough text", "natural"), {
+    assert.deepEqual(await refine("rough text", "natural", "neutral", "make it shorter"), {
       text: "Refined text.",
       provider: "groq",
     });

@@ -69,11 +69,11 @@ export function refineLocal(text, mode) {
     .filter(Boolean).join("\n\n");
 }
 
-export async function refine(text, mode, tone = "neutral") {
+export async function refine(text, mode, tone = "neutral", instruction = "") {
   const response = await fetch("/api/refine", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text, mode, tone }),
+    body: JSON.stringify({ text, mode, tone, instruction }),
   });
   if (!response.ok) throw new Error("AI refinement unavailable");
   const data = await response.json();
