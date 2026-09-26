@@ -31,6 +31,19 @@ function App() {
   const trimmed = draft.trim();
   const words = trimmed ? trimmed.split(/\s+/).length : 0;
 
+  async function pasteFromClipboard() {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (!text.trim()) return;
+      setDraft(text);
+      setStage("writing");
+      setNudge(false);
+    } catch {
+      setStage("writing");
+      setNudge(true);
+    }
+  }
+
   async function doRefine() {
     if (loading) return;
     if (!trimmed) {
@@ -111,7 +124,10 @@ function App() {
           {stage === "empty" && (
             <section className="rise">
               <h1>What are you<br />trying to say?</h1>
-              <button className="outline-pill" onClick={() => setStage("writing")}>Start writing</button>
+              <div className="start-actions">
+                <button className="outline-pill" onClick={() => setStage("writing")}>Start writing</button>
+                <button className="quiet-pill" onClick={pasteFromClipboard}>Paste from clipboard</button>
+              </div>
             </section>
           )}
 

@@ -250,3 +250,20 @@ footer {
     transition: none !important;
   }
 }
+.start-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-top: 3rem;
+}
+
+.start-actions .outline-pill { margin-top: 0; }
+
+.quiet-pill {
+  padding: .65rem 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+.quiet-pill:hover { color: var(--foreground); }
