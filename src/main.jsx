@@ -55,8 +55,9 @@ function App() {
     try {
       let out;
       try {
-        out = await refine(draft, mode);
-        setAiUsed(true);
+        const response = await refine(draft, mode);
+        out = response.text;
+        setAiUsed(response.provider === "groq");
       } catch {
         out = refineLocal(draft, mode);
         setAiUsed(false);

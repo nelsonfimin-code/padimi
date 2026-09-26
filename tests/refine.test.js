@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { refineLocal } from "../src/refine.js";
+import { refine, refineLocal } from "../src/refine.js";
 
 test("empty input stays empty", () => {
   assert.equal(refineLocal("", "natural"), "");
@@ -32,4 +32,19 @@ test("multiline text keeps paragraph boundaries", () => {
     refineLocal("first line\nsecond line\n\nnew paragraph", "natural"),
     "First line.\nSecond line.\n\nNew paragraph."
   );
+});
+test("remote refinement preserves provider metadata", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => new Response(
+    JSON.stringify({ text: "Refined text.", provider: "groq" }),
+    { status: 200, headers: { "Content-Type": "application/json" } }
+  );
+  try {
+    assert.deepEqual(await refine("rough text", "natural"), {
+      text: "Refined text.",
+      provider: "groq",
+    });
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });

@@ -68,5 +68,5 @@ export async function refine(text, mode) {
   if (!response.ok) throw new Error("AI refinement unavailable");
   const data = await response.json();
   if (!data?.text) throw new Error("AI returned no text");
-  return data.text;
+  return { text: data.text, provider: data.provider || "unknown" };
 }
