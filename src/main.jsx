@@ -9,6 +9,7 @@ function App() {
   const [mode, setMode] = useState("natural");
   const [tone, setTone] = useState("neutral");
   const [instruction, setInstruction] = useState("");
+  const [iterationInstruction, setIterationInstruction] = useState("");
   const [result, setResult] = useState("");
   const [resultMode, setResultMode] = useState("natural");
   const [resultTone, setResultTone] = useState("neutral");
@@ -47,9 +48,9 @@ function App() {
     }
   }
 
-  async function doRefine() {
+  async function refineText(source, nextMode, nextTone, nextInstruction, keepOriginal = true) {
     if (loading) return;
-    if (!trimmed) {
+    if (!source.trim()) {
       setNudge(true);
       areaRef.current?.focus();
       return;
@@ -58,22 +59,33 @@ function App() {
     try {
       let out;
       try {
-        const response = await refine(draft, mode, tone, instruction);
+        const response = await refine(source, nextMode, nextTone, nextInstruction);
         out = response.text;
         setAiUsed(response.provider === "groq");
       } catch {
-        out = refineLocal(draft, mode);
+        out = refineLocal(source, nextMode);
         setAiUsed(false);
       }
-      setResult(out || trimmed);
-      setResultMode(mode);
-      setResultTone(tone);
+      setResult(out || source.trim());
+      setResultMode(nextMode);
+      setResultTone(nextTone);
       setView("refined");
       setCopied(false);
       setStage("result");
+      if (!keepOriginal) setDraft(source);
     } finally {
       setLoading(false);
     }
+  }
+
+  async function doRefine() {
+    if (loading) return;
+    if (!trimmed) {
+      setNudge(true);
+      areaRef.current?.focus();
+      return;
+    }
+    return refineText(draft, mode, tone, instruction);
   }
 
   async function copy() {
@@ -99,12 +111,21 @@ function App() {
     }
   }
 
+  async function refineAgain() {
+    if (loading) return;
+    const nextInstruction = iterationInstruction.trim();
+    if (!nextInstruction) return;
+    await refineText(result, resultMode, resultTone, nextInstruction);
+    setIterationInstruction("");
+  }
+
   function again() {
     setDraft("");
     setResult("");
     setMode("natural");
     setTone("neutral");
     setInstruction("");
+    setIterationInstruction("");
     setStage("empty");
   }
 
@@ -223,6 +244,27 @@ function App() {
               >
                 {view === "refined" ? result : draft.trim()}
               </p>
+              <div className="iterate-row">
+                <input
+                  className="instruction-input iterate-input"
+                  value={iterationInstruction}
+                  onChange={(event) => setIterationInstruction(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" && iterationInstruction.trim()) refineAgain();
+                  }}
+                  placeholder="Change it again… e.g. shorter, warmer"
+                  aria-label="Refine the current result"
+                  maxLength={240}
+                  disabled={loading}
+                />
+                <button
+                  className="iterate-pill"
+                  onClick={refineAgain}
+                  disabled={loading || !iterationInstruction.trim()}
+                >
+                  {loading ? "Refining…" : "Refine again"}
+                </button>
+              </div>
               <div className="result-actions">
                 <button onClick={copy}>{copied ? "Copied" : "Copy"}</button>
                 <button onClick={() => setStage("writing")}>Edit</button>

@@ -229,6 +229,31 @@ textarea:focus-visible { outline: none; }
 
 .result-text.original { color: var(--muted-foreground); }
 
+.iterate-row {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  margin-top: 2rem;
+}
+
+.iterate-input {
+  min-width: 0;
+  flex: 1;
+  margin: 0;
+}
+
+.iterate-pill {
+  flex: 0 0 auto;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: .55rem .9rem;
+  color: var(--foreground);
+  font-size: 11px;
+}
+
+.iterate-pill:hover:not(:disabled) { border-color: var(--plum); }
+.iterate-pill:disabled { opacity: .35; cursor: default; }
+
 .result-actions {
   display: flex;
   gap: 1.75rem;
