@@ -18,6 +18,10 @@ function App() {
   const [aiUsed, setAiUsed] = useState(false);
   const [view, setView] = useState("refined");
   const [nudge, setNudge] = useState(false);
+  const [history, setHistory] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("padimi-history") || "[]"); } catch { return []; }
+  });
+  const [showHistory, setShowHistory] = useState(false);
   const areaRef = useRef(null);
   const copyTimer = useRef(null);
 
@@ -31,6 +35,10 @@ function App() {
     }
   }, [stage]);
   useEffect(() => () => clearTimeout(copyTimer.current), []);
+
+  useEffect(() => {
+    try { localStorage.setItem("padimi-history", JSON.stringify(history.slice(0, 10))); } catch {}
+  }, [history]);
 
   const trimmed = draft.trim();
   const words = trimmed ? trimmed.split(/\s+/).length : 0;
@@ -72,6 +80,10 @@ function App() {
       setView("refined");
       setCopied(false);
       setStage("result");
+      setHistory((items) => [{
+        id: Date.now(), original: keepOriginal ? source.trim() : draft.trim(), result: out || source.trim(),
+        mode: nextMode, tone: nextTone, instruction: nextInstruction.trim(), createdAt: Date.now()
+      }, ...items].slice(0, 10));
       if (!keepOriginal) setDraft(source);
     } finally {
       setLoading(false);
@@ -119,6 +131,31 @@ function App() {
     setIterationInstruction("");
   }
 
+
+  function openHistory(item) {
+    setDraft(item.original);
+    setResult(item.result);
+    setResultMode(item.mode);
+    setResultTone(item.tone);
+    setMode(item.mode);
+    setTone(item.tone);
+    setInstruction(item.instruction || "");
+    setIterationInstruction("");
+    setView("refined");
+    setAiUsed(false);
+    setShowHistory(false);
+    setStage("result");
+  }
+
+  function removeHistory(id) {
+    setHistory((items) => items.filter((item) => item.id !== id));
+  }
+
+  function clearHistory() {
+    setHistory([]);
+    setShowHistory(false);
+  }
+
   function again() {
     setDraft("");
     setResult("");
@@ -144,9 +181,12 @@ function App() {
       <div className="glow-field" aria-hidden="true" />
       <div className="shell">
         <header className="header">
+          <div className="header-tools">
+          <button className="history-button" onClick={() => setShowHistory((value) => !value)} aria-expanded={showHistory}>History{history.length ? ` · ${history.length}` : ""}</button>
           <button className="brand" onClick={() => stage !== "writing" && again()} aria-label="PADIMI, start over">
             PADIMI
           </button>
+          </div>
         </header>
 
         <main className={stage === "writing" ? "main writing-main" : "main"}>

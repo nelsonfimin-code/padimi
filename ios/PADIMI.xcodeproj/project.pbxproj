@@ -1,0 +1,69 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9D973A1D08764BBEA11C51F2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59DD1070B5D6404FB07C012A /* ContentView.swift */; };
+		ABC21FE1795A4A42967DFA01 /* PADIMIKeyboard.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C25CB0F7148F4FC0BF533BE3 /* PADIMIKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		0C1B73CFC32C417E94AFC4F8 /* PADIMIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B73F2D28FA4E47B3994672 /* PADIMIApp.swift */; };
+		4C35390328F7478FA91CCD58 /* PADIMIKeyboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB732699662A4FB2B1FC2C2A /* PADIMIKeyboardViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */		B3B73F2D28FA4E47B3994672 /* PADIMIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PADIMIApp.swift; sourceTree = "<group>"; };
+		59DD1070B5D6404FB07C012A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		704CBB5C380646428A2A04E2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BB732699662A4FB2B1FC2C2A /* PADIMIKeyboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PADIMIKeyboardViewController.swift; sourceTree = "<group>"; };
+		8E3D285A6A2F4A02A7A1CED3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CBDD14CCD12043D99DBDB43B /* PADIMI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PADIMI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C25CB0F7148F4FC0BF533BE3 /* PADIMIKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = wrapper.app-extension; includeInIndex = 0; path = PADIMIKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */		2C89017697F74689938B4CF2 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		2A6E86D57FC34120B8D4C72A /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */		F18AEA947DBE4532BED881F2 = {isa = PBXGroup; children = (CF41E09A7AAE48FD9BE333CC, 9997AA160E4E48F1A1F096AA, ECF09AEEFA0B423EAD90B97F); sourceTree = "<group>"; };
+		CF41E09A7AAE48FD9BE333CC /* PADIMI */ = {isa = PBXGroup; children = (B3B73F2D28FA4E47B3994672, 59DD1070B5D6404FB07C012A, 704CBB5C380646428A2A04E2); path = PADIMI; sourceTree = "<group>"; };
+		9997AA160E4E48F1A1F096AA /* PADIMIKeyboard */ = {isa = PBXGroup; children = (BB732699662A4FB2B1FC2C2A, 8E3D285A6A2F4A02A7A1CED3); path = PADIMIKeyboard; sourceTree = "<group>"; };
+		ECF09AEEFA0B423EAD90B97F = {isa = PBXGroup; children = (CBDD14CCD12043D99DBDB43B, C25CB0F7148F4FC0BF533BE3); name = Products; sourceTree = "<group>"; };
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */		929C154F2DF34E9D800CA2C0 /* PADIMI */ = {isa = PBXNativeTarget; buildConfigurationList = 9C12520D733A4D69B8FBFC10; buildPhases = (C4267607E20A4582B4CFC8EF, 2C89017697F74689938B4CF2, 5ADDEDA4D6C543D698A70B46, B28CACD753CB4E8D98A3FD33); buildRules = (); dependencies = (); name = PADIMI; productName = PADIMI; productReference = CBDD14CCD12043D99DBDB43B; productType = "com.apple.product-type.application"; };
+		EA812D87F5DC4B69869FE664 /* PADIMIKeyboard */ = {isa = PBXNativeTarget; buildConfigurationList = EDD6131B589B485F90DDEF6C; buildPhases = (AC475948AC6C4F16AEBDC5D5, 2A6E86D57FC34120B8D4C72A, E032F5F9ACB94C36A4576410); buildRules = (); dependencies = (); name = PADIMIKeyboard; productName = PADIMIKeyboard; productReference = C25CB0F7148F4FC0BF533BE3; productType = "com.apple.product-type.app-extension"; };
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */		3C78117A15AE44E6AE50B1C5 /* Project object */ = {isa = PBXProject; attributes = {LastUpgradeCheck = 1420; TargetAttributes = { 929C154F2DF34E9D800CA2C0 = {CreatedOnToolsVersion = 14.2; }; EA812D87F5DC4B69869FE664 = {CreatedOnToolsVersion = 14.2; }; }; }; buildConfigurationList = E56891E39CF44120A211C931; compatibilityVersion = "Xcode 14.0"; developmentRegion = en; hasScannedForEncodings = 0; knownRegions = (en, Base); mainGroup = F18AEA947DBE4532BED881F2; productRefGroup = ECF09AEEFA0B423EAD90B97F; projectDirPath = ""; projectRoot = ""; targets = (929C154F2DF34E9D800CA2C0, EA812D87F5DC4B69869FE664); };
+/* End PBXProject section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B28CACD753CB4E8D98A3FD33 /* Embed Foundation Extensions */ = {isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 13; files = (ABC21FE1795A4A42967DFA01); name = "Embed Foundation Extensions"; runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */		5ADDEDA4D6C543D698A70B46 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		E032F5F9ACB94C36A4576410 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */		C4267607E20A4582B4CFC8EF = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (0C1B73CFC32C417E94AFC4F8, 9D973A1D08764BBEA11C51F2); runOnlyForDeploymentPostprocessing = 0; };
+		AC475948AC6C4F16AEBDC5D5 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (4C35390328F7478FA91CCD58); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXSourcesBuildPhase section */
+
+
+/* Begin XCBuildConfiguration section */		E56891E39CF44120A211C931 = {isa = XCConfigurationList; buildConfigurations = (901DD9F2C876450BA8CB0CED, 21575682B0714202921306F1); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		9C12520D733A4D69B8FBFC10 = {isa = XCConfigurationList; buildConfigurations = (D516787E5ABC48A2AA64EF72, 23BCA7D64FFC46E39913C1A7); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		EDD6131B589B485F90DDEF6C = {isa = XCConfigurationList; buildConfigurations = (E769E890BEA2425E8808FEC9, 7CE05BEA73B74E63967145AD); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		901DD9F2C876450BA8CB0CED = {isa = XCBuildConfiguration; buildSettings = { ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; SWIFT_VERSION = 5.0; }; name = Debug; };
+		21575682B0714202921306F1 = {isa = XCBuildConfiguration; buildSettings = { ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; SWIFT_VERSION = 5.0; }; name = Release; };
+		D516787E5ABC48A2AA64EF72 = {isa = XCBuildConfiguration; buildSettings = { INFOPLIST_FILE = PADIMI/Info.plist; PRODUCT_BUNDLE_IDENTIFIER = com.haskebeatz.PADIMI; PRODUCT_NAME = PADIMI; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2"; IPHONEOS_DEPLOYMENT_TARGET = 16.2; }; name = Debug; };
+		23BCA7D64FFC46E39913C1A7 = {isa = XCBuildConfiguration; buildSettings = { INFOPLIST_FILE = PADIMI/Info.plist; PRODUCT_BUNDLE_IDENTIFIER = com.haskebeatz.PADIMI; PRODUCT_NAME = PADIMI; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2"; IPHONEOS_DEPLOYMENT_TARGET = 16.2; }; name = Release; };
+		E769E890BEA2425E8808FEC9 = {isa = XCBuildConfiguration; buildSettings = { INFOPLIST_FILE = PADIMIKeyboard/Info.plist; PRODUCT_BUNDLE_IDENTIFIER = com.haskebeatz.PADIMI.Keyboard; PRODUCT_NAME = PADIMIKeyboard; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2"; IPHONEOS_DEPLOYMENT_TARGET = 16.2; SKIP_INSTALL = YES; }; name = Debug; };
+		7CE05BEA73B74E63967145AD = {isa = XCBuildConfiguration; buildSettings = { INFOPLIST_FILE = PADIMIKeyboard/Info.plist; PRODUCT_BUNDLE_IDENTIFIER = com.haskebeatz.PADIMI.Keyboard; PRODUCT_NAME = PADIMIKeyboard; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2"; IPHONEOS_DEPLOYMENT_TARGET = 16.2; SKIP_INSTALL = YES; }; name = Release; };
+/* End XCBuildConfiguration section */
+	};
+	rootObject = 3C78117A15AE44E6AE50B1C5 /* Project object */;
+}
